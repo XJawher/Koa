@@ -1,0 +1,26 @@
+{
+    "name": "koa",
+    "version": "1.0.0",
+    "description": "koa",
+    "contributors": [
+        "lipc <lplee7830@gmail.com>"
+    ],
+    "author": "lipc",
+    "private": true,
+    "scripts": {
+        "start": "node scripts/start.js"
+    },
+    "dependencies": {
+        "eslint": "4.10.0",
+        "eslint-config-react-app": "^2.1.0",
+        "eslint-loader": "1.9.0",
+        "eslint-plugin-flowtype": "2.39.1",
+        "eslint-plugin-import": "2.8.0",
+        "eslint-plugin-jsx-a11y": "5.1.1",
+        "eslint-plugin-react": "7.4.0",
+        "koa": "^2.4.1",
+        "koa-bodyparser": "^4.2.0",
+        "koa-router": "^7.3.0",
+        "koa-socket": "^4.4.0"
+    }
+}
