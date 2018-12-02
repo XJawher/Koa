@@ -100,7 +100,10 @@ measureFileSizesBeforeBuild(paths.appBuild)
         }
     );
 
-// Create the production build and print the deployment instructions.
+    /**
+     * 
+     * @param {*} previousFileSizes 
+     */
 function build(previousFileSizes) {
     console.log('Will start compiling in multi-thread mode.\n');
     console.log('Creating an optimized production build...\n');
@@ -144,13 +147,12 @@ function build(previousFileSizes) {
 }
 
 function copyPublicFolder() {
-    /*
+     /*
     fs.copySync(paths.appSrc + '/images', paths.appPublic + '/images', {
         dereference: true,
         filter: file => file !== paths.appHtml,
     });
     */
-
     fs.copySync(paths.appPublic, paths.appBuild, {
         dereference: true,
         filter: file => file !== paths.appHtml,

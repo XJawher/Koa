@@ -45,6 +45,10 @@ exports.api = {
     server: {
         receiveevent: 'http://localhost/api/receiveevent'
     },
+    test:{
+        get:'http://localhost:3000/test/get',
+        post:'http://localhost:3000/test/post',
+    },
     orcafs: {
         gettoken: 'http://localhost:9090/token/get',
         listdisk: 'http://localhost:9090/disk/list/',

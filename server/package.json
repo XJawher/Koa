@@ -64,6 +64,7 @@
 		"koa-bodyparser": "^4.2.0",
 		"koa-router": "^7.3.0",
 		"koa-socket": "^4.4.0",
+		"koa2-cors": "^2.0.6",
 		"less": "~2.7.3",
 		"less-loader": "~4.0.5",
 		"less-plugin-autoprefix": "~1.5.1",
