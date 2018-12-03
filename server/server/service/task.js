@@ -15,42 +15,42 @@ const model = {
     },
     async sendChangePasswordMessage() {
         try {
-            let [{ password }] = await database.getUser({ username: config.user.name });
-            password === handler.md5(config.user.password) && await status.sendEvent('user', 21, { username: config.user.name, password: config.user.password }, false, true);
+            let [{password}] = await database.getUser({username: config.user.name});
+            password === handler.md5(config.user.password) && await status.sendEvent('user', 21, {username: config.user.name, password: config.user.password}, false, true);
         } catch (error) {
             handler.error(212, error);
         }
     },
     async getClusterThroughputAndIops() {
         let time = new Date().getTime();
-        let { data: { throughput, iops } } = await afterMe.getClusterThroughputAndIops();
+        let {data: {throughput, iops}} = await afterMe.getClusterThroughputAndIops();
         let throughputList = throughput.reverse().slice(0, 15);
         let iopsList = iops.reverse().slice(0, 15);
         let totalThroughput = 0;
         let totalIops = 0;
         if (throughputList.length && iopsList.length) {
             throughputList.forEach(item => {
-                totalThroughput += item.total
+                totalThroughput += item.total;
             });
             iopsList.forEach(item => {
-                totalIops += item.total
+                totalIops += item.total;
             });
         }
-        await database.addClusterThroughputAndIops({ throughput: totalThroughput, iops: totalIops, time });
+        await database.addClusterThroughputAndIops({throughput: totalThroughput, iops: totalIops, time});
     },
     async getNodeCpuAndMemory() {
         let time = new Date().getTime();
-        let nodeList = await database.getSetting({ key: config.setting.nodeList });
+        let nodeList = await database.getSetting({key: config.setting.nodeList});
         let hostList = await Promise.all(nodeList.map(async node => (await promise.runCommandInRemoteNodeInPromise(node, 'hostname'))));
-        let dataList = await Promise.all(hostList.map(async hostname => (Object.assign(await afterMe.getNodeCpuAndMemory({ hostname })).data)));
-        await database.addNodeCpuAndMemory({ hostList, dataList, time });
+        let dataList = await Promise.all(hostList.map(async hostname => (Object.assign(await afterMe.getNodeCpuAndMemory({hostname})).data)));
+        await database.addNodeCpuAndMemory({hostList, dataList, time});
     },
     async getNodeThroughputAndIops() {
         let time = new Date().getTime();
-        let nodeList = await database.getSetting({ key: config.setting.nodeList });
+        let nodeList = await database.getSetting({key: config.setting.nodeList});
         let hostList = await Promise.all(nodeList.map(async node => (await promise.runCommandInRemoteNodeInPromise(node, 'hostname'))));
         let dataList = await Promise.all(hostList.map(async hostname => {
-            let { data: { throughput, iops } } = await afterMe.getNodeThroughputAndIops({ hostname });
+            let {data: {throughput, iops}} = await afterMe.getNodeThroughputAndIops({hostname});
             let throughputList = throughput.reverse().slice(0, 15);
             let iopsList = iops.reverse().slice(0, 15);
             let readThroughput = 0;
@@ -58,16 +58,16 @@ const model = {
             let totalIops = 0;
             if (throughputList.length && iopsList.length) {
                 throughputList.forEach(item => {
-                    readThroughput += item.read
+                    readThroughput += item.read;
                     writeThroughput += item.write;
                 });
                 iopsList.forEach(item => {
-                    totalIops += item.total
+                    totalIops += item.total;
                 });
             }
-            return { throughput: { read: readThroughput, write: writeThroughput }, iops: totalIops };
+            return {throughput: {read: readThroughput, write: writeThroughput}, iops: totalIops};
         }));
-        await database.addNodeThroughputAndIops({ hostList, dataList, time });
+        await database.addNodeThroughputAndIops({hostList, dataList, time});
     },
 };
 module.exports = model;

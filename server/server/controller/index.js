@@ -4,7 +4,7 @@
 const model = {
 
     '/api/test/get': ctx => {
-        console.log(ctx.param);
+        console.log(ctx.query);
         ctx.body = {code: 0, data: 'start to de-initialize cluster'};
     },
 
@@ -13,9 +13,9 @@ const model = {
     },
     
     '/api/test/post': ctx => {
-        console.log(ctx.request);
+        console.log(ctx.request.body);
         
-        ctx.body = ctx.param || {code:1,data:'have no idea about  ctx.param'};
+        ctx.body = ctx.params || {code:1,data:'have no idea about  ctx.param'};
     },
    
 };

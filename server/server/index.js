@@ -4,20 +4,8 @@ const router = require('./router');
 // const socket = require('./module/socket');
 // const middleware = require('./middleware');
 const bodyParser = require('koa-bodyparser');
-const cors = require('koa2-cors');
 // socket.io.attach(app);
 app.use(bodyParser());
-app.use(cors({
-    origin: function (ctx) {
-            // return "*"; // 允许来自所有域名请求
-        return 'http://localhost:3000'; 
-    },
-    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
-    maxAge: 5,
-    credentials: true,
-    allowMethods: ['GET', 'POST', 'DELETE'],
-    allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
-}));
 // app.use(middleware.initRequest());
 // //app.use(middleware.checkKey());
 // app.use(middleware.syncStatus());
