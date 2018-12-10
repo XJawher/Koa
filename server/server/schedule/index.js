@@ -5,19 +5,19 @@ const init = require('../service/initialize');
 const doOrNotDo = async () => (status.getInitStatus() && await init.getMongoDBMasterOrNot() && !status.getDeinitStatus() && !status.getReinitStatus() && !status.getRollbackStatus());
 
 new cron.CronJob('0 * * * * *', async () => {
-    await doOrNotDo() && await task.createSnapshot();;
+    await doOrNotDo() && await task.createSnapshot();
 }, null, true);
 
 new cron.CronJob('*/15 * * * * *', async () => {
-    await doOrNotDo() && await task.getClusterThroughputAndIops();;
+    await doOrNotDo() && await task.getClusterThroughputAndIops();
 }, null, true);
 
 new cron.CronJob('*/15 * * * * *', async () => {
-    await doOrNotDo() && await task.getNodeCpuAndMemory();;
+    await doOrNotDo() && await task.getNodeCpuAndMemory();
 }, null, true);
 
 new cron.CronJob('*/15 * * * * *', async () => {
-    await doOrNotDo() && await task.getNodeThroughputAndIops();;
+    await doOrNotDo() && await task.getNodeThroughputAndIops();
 }, null, true);
 
 new cron.CronJob('0 */5 * * * *', async () => {

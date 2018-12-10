@@ -31,7 +31,7 @@ const model = {
         let { metadataServerIPs, storageServerIPs } = param;
         let metadataServerIPsError = await Promise.all(metadataServerIPs.map(async metadata => (Object.values(await request.get(config.api.orcafs.gettoken.replace('localhost', metadata), {}, {}, true, { tokenId: '' }))[0] ? { status: '', help: '' } : { status: 'error', help: 1 })));
         let storageServerIPsError = await Promise.all(storageServerIPs.map(async storage => (Object.values(await request.get(config.api.orcafs.gettoken.replace('localhost', storage), {}, {}, true, { tokenId: '' }))[0] ? { status: '', help: '' } : { status: 'error', help: 1 })));
-        let result = !Boolean(metadataServerIPsError.concat(storageServerIPsError).filter(ip => (ip.status)).length);
+        let result = !metadataServerIPsError.concat(storageServerIPsError).filter(ip => (ip.status)).length;
         return { metadataServerIPsError, storageServerIPsError, result };
     },
     async getRaidRecommendedConfiguration(param) {

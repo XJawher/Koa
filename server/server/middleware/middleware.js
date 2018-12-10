@@ -1,42 +1,62 @@
 const config = require('../config');
-const status = require('../service/status');
+// const status = require('../service/status');
 const handler = require('../module/handler');
 const promise = require('../module/promise');
 const model = {
-	initRequest() {
+	// initRequest() {
+	// 	return async (ctx, next) => {
+	// 		ctx.param = ctx.method.toLowerCase() === 'get' ? ctx.query : ctx.request.body;
+	// 		ctx.state = {
+	// 			api: ctx.url.split('/').pop().replace(/\?\S+/, ''),
+	// 			key: ctx.get('Api-Key'),
+	// 			cookie: {
+	// 				init: handler.cookie(ctx.cookies.get('init')),
+	// 				deinit: handler.cookie(ctx.cookies.get('deinit')),
+	// 				reinit: handler.cookie(ctx.cookies.get('reinit')),
+	// 				rollbacking: handler.cookie(ctx.cookies.get('rollbacking')),
+	// 				login: handler.cookie(ctx.cookies.get('login'))
+	// 			},
+	// 			encoding: ctx.get('Accept-Encoding'),
+	// 			status: {
+	// 				init: status.getInitStatus(),
+	// 				deinit: status.getDeinitStatus(),
+	// 				reinit: status.getReinitStatus(),
+	// 				rollbacking: status.getRollbackStatus()
+	// 			}
+	// 		};
+	// 		await next();
+	// 	};
+	// },
+
+	setParam() {
 		return async (ctx, next) => {
 			ctx.param = ctx.method.toLowerCase() === 'get' ? ctx.query : ctx.request.body;
-			ctx.state = {
-				api: ctx.url.split('/').pop().replace(/\?\S+/, ''),
-				key: ctx.get('Api-Key'),
-				cookie: {
-					init: handler.cookie(ctx.cookies.get('init')),
-					deinit: handler.cookie(ctx.cookies.get('deinit')),
-					reinit: handler.cookie(ctx.cookies.get('reinit')),
-					rollbacking: handler.cookie(ctx.cookies.get('rollbacking')),
-					login: handler.cookie(ctx.cookies.get('login'))
-				},
-				encoding: ctx.get('Accept-Encoding'),
-				status: {
-					init: status.getInitStatus(),
-					deinit: status.getDeinitStatus(),
-					reinit: status.getReinitStatus(),
-					rollbacking: status.getRollbackStatus()
-				}
-			};
+			const start = Date.now();
 			await next();
+			const ms = Date.now() - start;
+			ctx.set('X-Response-Time', `${ms}ms`);
 		};
 	},
+
+	logger() {
+		return async (ctx, next) => {
+			await next();
+			const rt = ctx.response.get('X-Response-Time');
+			console.log(`${ctx.method} ${ctx.url} - ${rt}`);
+		};
+	},
+
 	checkKey() {
 		return async (ctx, next) => {
-			let {api, key} = ctx.state;
+			let { api, key } = ctx.state;
 			key && key === config.key[api] ? await next() : ctx.body = handler.responseWithoutLog(11);
 		};
 	},
+
 	syncStatus() {
 		return async (ctx, next) => {
 			await next();
-			let {cookie: {init: initCookie, deinit: deinitCookie, reinit: reinitCookie, rollbacking: rollbackCookie, login: loginCookie}, status: {init: initStatus, deinit: deinitStatus, reinit: reinitStatus, rollbacking: rollbackStatus}} = ctx.state;
+			let { cookie: { init: initCookie, deinit: deinitCookie, reinit: reinitCookie, rollbacking: rollbackCookie, login: loginCookie }, status: { init: initStatus, deinit: deinitStatus, reinit: reinitStatus, rollbacking: rollbackStatus } } = ctx.state;
 			(initCookie !== initStatus) && ctx.cookies.set('init', String(initStatus), config.cookie);
 			(deinitCookie !== deinitStatus) && ctx.cookies.set('deinit', String(deinitStatus), config.cookie);
 			(reinitCookie !== reinitStatus) && ctx.cookies.set('reinit', String(reinitStatus), config.cookie);
@@ -44,9 +64,10 @@ const model = {
 			!initStatus && loginCookie && ctx.cookies.set('login', 'false', config.cookie) && ctx.cookies.set('user', '', config.cookie);
 		};
 	},
+
 	filterRequest() {
 		return async (ctx, next) => {
-			let {api, status: {init: initStatus, deinit: deinitStatus, reinit: reinitStatus, rollbacking: rollbackStatus}} = ctx.state;
+			let { api, status: { init: initStatus, deinit: deinitStatus, reinit: reinitStatus, rollbacking: rollbackStatus } } = ctx.state;
 			let syncAPI = 'syncsystemstatus';
 			let raidAPI = 'getraidrecommendedconfiguration';
 			let diskAPI = 'getdisklist';
@@ -54,6 +75,7 @@ const model = {
 			(api === syncAPI || api === raidAPI || api === diskAPI) || (!initStatus === initApiList.includes(api) && !deinitStatus && !reinitStatus && !rollbackStatus) ? await next() : ctx.body = !initStatus ? handler.responseWithoutLog(1) : !deinitStatus ? !reinitStatus ? !rollbackStatus ? handler.responseWithoutLog(2) : handler.responseWithoutLog(0, 2) : handler.responseWithoutLog(0, 1) : handler.responseWithoutLog(0, 0);
 		};
 	},
+
 	compressResponse() {
 		return async (ctx, next) => {
 			await next();
@@ -69,6 +91,7 @@ const model = {
 				}
 			}
 		};
-	}
+	},
+
 };
 module.exports = model;

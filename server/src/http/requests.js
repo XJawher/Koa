@@ -1,10 +1,10 @@
-import {fetchGet, fetchPost} from './fetch';
+import { fetchGet, fetchPost } from './fetch';
 
 let requestMiddleWare = fn => {
     try {
         return fn();
     } catch (e) {
-        return {code: 1, message: e};
+        return { code: 1, message: e };
     }
 };
 
@@ -16,7 +16,7 @@ export default {
      */
     async testGet(ip = '', action = '') {
         return requestMiddleWare(async () => {
-            let data = await fetchGet('/api/test/get', {data: '123'});
+            let data = await fetchGet('/api/test/get', { data: '123' });
             return data;
         });
     },
@@ -27,7 +27,7 @@ export default {
      */
     async testPost(name = '') {
         return requestMiddleWare(async () => {
-            let data = await fetchPost('/api/test/post', {name: 'name'});
+            let data = await fetchPost('/api/test/post', { name: 'name' });
             return data;
         });
     },

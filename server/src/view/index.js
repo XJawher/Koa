@@ -1,6 +1,4 @@
-import React, {
-    Component
-} from 'react';
+import React, {Component} from 'react';
 import '../style/App.css';
 import http from '../http/requests';
 
@@ -21,8 +19,7 @@ class App extends Component {
     render() {
         return (
             <div>
-                <div  >
-
+                <div>
                     <button onClick={this.test.bind(this, 'get')}>get</button>
                 </div>
                 <div>
