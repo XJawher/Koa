@@ -14,6 +14,8 @@ const model = {
 
     '/api/test/post': ctx => {
         console.log(ctx.request.body);
+        console.log('test for ctx.parma');
+        console.log(ctx.params);
         ctx.body = ctx.params || { code: 1, data: 'have no idea about  ctx.param' };
     },
 };

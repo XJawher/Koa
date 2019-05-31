@@ -3,38 +3,47 @@ const config = require('../config');
 const handler = require('../module/handler');
 const promise = require('../module/promise');
 const model = {
-	// initRequest() {
-	// 	return async (ctx, next) => {
-	// 		ctx.param = ctx.method.toLowerCase() === 'get' ? ctx.query : ctx.request.body;
-	// 		ctx.state = {
-	// 			api: ctx.url.split('/').pop().replace(/\?\S+/, ''),
-	// 			key: ctx.get('Api-Key'),
-	// 			cookie: {
-	// 				init: handler.cookie(ctx.cookies.get('init')),
-	// 				deinit: handler.cookie(ctx.cookies.get('deinit')),
-	// 				reinit: handler.cookie(ctx.cookies.get('reinit')),
-	// 				rollbacking: handler.cookie(ctx.cookies.get('rollbacking')),
-	// 				login: handler.cookie(ctx.cookies.get('login'))
-	// 			},
-	// 			encoding: ctx.get('Accept-Encoding'),
-	// 			status: {
-	// 				init: status.getInitStatus(),
-	// 				deinit: status.getDeinitStatus(),
-	// 				reinit: status.getReinitStatus(),
-	// 				rollbacking: status.getRollbackStatus()
-	// 			}
-	// 		};
-	// 		await next();
-	// 	};
-	// },
+	initRequest() {
+		return async (ctx, next) => {
+			ctx.param = ctx.method.toLowerCase() === 'get' ? ctx.query : ctx.request.body;
+			ctx.state = {
+				api: ctx.url.split('/').pop().replace(/\?\S+/, ''),
+				key: ctx.get('Api-Key'),
+				cookie: {
+					init: handler.cookie(ctx.cookies.get('init')),
+					deinit: handler.cookie(ctx.cookies.get('deinit')),
+					reinit: handler.cookie(ctx.cookies.get('reinit')),
+					rollbacking: handler.cookie(ctx.cookies.get('rollbacking')),
+					login: handler.cookie(ctx.cookies.get('login'))
+				},
+				encoding: ctx.get('Accept-Encoding'),
+				status: {
+					init: status.getInitStatus(),
+					deinit: status.getDeinitStatus(),
+					reinit: status.getReinitStatus(),
+					rollbacking: status.getRollbackStatus()
+				}
+			};
+			await next();
+		};
+	},
 
 	setParam() {
 		return async (ctx, next) => {
-			ctx.param = ctx.method.toLowerCase() === 'get' ? ctx.query : ctx.request.body;
-			const start = Date.now();
+			// console.log(ctx);
+			ctx.param = await ctx.method.toLowerCase() === 'get' ? ctx.query : ctx.request.body;
+			// ctx.state = {
+			// 	api: ctx.url.split('/').pop().replace(/\?\S+/, ''),
+			// 	key: ctx.get('Api-Key'),
+			// 	cookie: {
+			// 		init: handler.cookie(ctx.cookies.get('init')),
+			// 		deinit: handler.cookie(ctx.cookies.get('deinit')),
+			// 		reinit: handler.cookie(ctx.cookies.get('reinit')),
+			// 		rollbacking: handler.cookie(ctx.cookies.get('rollbacking')),
+			// 		login: handler.cookie(ctx.cookies.get('login'))
+			// 	},
+			// };
 			await next();
-			const ms = Date.now() - start;
-			ctx.set('X-Response-Time', `${ms}ms`);
 		};
 	},
 
